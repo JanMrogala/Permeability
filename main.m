@@ -2,12 +2,13 @@ clear all; close all;
 
 imgName = "resources/testImg/10x10.png";
 imgNameDil = "output/10x10.png";
-
 filledImgName = "output/filled1.png";
 filledImgNameDil = "output/filled2.png";
 
 x = 2;
 y = 1;
+
+structuringElement = {[0,0],[1,0]};
 
 image = uint8(imread(imgName));
 
@@ -16,16 +17,14 @@ boundaryColor = [0;0;0];
 oldColor = image(y, x, :);
 
 filled = lineSeedFill2D(x, y, fillColor, boundaryColor, image);
-imwrite(filled, filledImgName);
-
-
-structuringElement = {[0,0],[1,0]};
 
 dilatedImage = dilation(image, structuringElement, boundaryColor);
-imwrite(dilatedImage, imgNameDil);
 
 filled2 = lineSeedFill2D(x, y, fillColor, boundaryColor, dilatedImage);
-imwrite(filled2, filledImgName);
+
+imwrite(filled, filledImgName);
+imwrite(dilatedImage, imgNameDil);
+imwrite(filled2, filledImgNameDil);
 
 
 X1=double(imread(imgName));
@@ -41,4 +40,3 @@ subplot(2,2,3), imshow(X3);
 title("original filled");
 subplot(2,2,4), imshow(X4);
 title("dilated filled");
-#}
