@@ -1,3 +1,20 @@
+#{
+
+returns image with the specified area
+filled by the line seed fill algorithm.
+
+INPUT:
+  integer xi
+  integer yi
+  vector fillColor [r;g;b]
+  vector oldColor [r;g;b]
+  matrix image [1,2;3,4;...]
+
+OUTPUT:
+  matrix ret [1,2;3,4;...]
+
+#}
+
 function ret = lineSeedFill2D(xi, yi, fillColor, boundaryColor, image)
 
 	assert (!(xi > size(image)(1,2) || xi <= 0 ||

@@ -1,25 +1,25 @@
 #{
 
-the morphological operation dilation expands
-image boundary pixels by the structure element.
+the morphological operation dilation expands every pixel
+with the target color by the structure element.
 
 INPUT:
   matrix image [1,2;3,4;...]
   array structuringElement {[1,0],[0,1],...}
-  vector boundaryColor [r;g;b]
+  vector targetColor [r;g;b]
 
 OUTPUT:
   matrix ret [1,2;3,4;...]
 
 #}
 
-function ret = dilation(image, structuringElement, boundaryColor)
+function ret = dilation(image, structuringElement, targetColor)
 
   dilatedVectors = {};
   xLimit = size(image)(1,2);
   yLimit = size(image)(1,1);
 
-  imgVectors = convertSolidPixelsToVectors(image, boundaryColor);
+  imgVectors = convertPixelsToVectors(image, targetColor);
 
   for i = 1:columns(structuringElement)
     for n = 1:columns(imgVectors)
@@ -38,7 +38,7 @@ function ret = dilation(image, structuringElement, boundaryColor)
 
     x = dilatedVectors{i}(1,1);
     y = dilatedVectors{i}(1,2);
-    image(y,x,:) = boundaryColor;
+    image(y,x,:) = targetColor;
 
   endfor
 
