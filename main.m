@@ -8,7 +8,8 @@ filledImgNameDil = "output/filled2.png";
 x = 2;
 y = 1;
 
-structuringElement = {[0,0],[1,0]};
+structuringElement = {[0,0],[1,0],[0,1]};
+structuringElementOpp = {[0,0],[-1,0],[0,-1]};
 structuringElement2 = {[0,0],[1,0],[-1,0],[0,1],[0,-1]};
 
 image = uint8(imread(imgName));
@@ -36,11 +37,14 @@ for i = 1:columns(differenceVectors)
   endif
 endfor
 
-dilatedImage2 = dilation(image2, structuringElement2, fillColor);
+image2 = dilation(image2, structuringElementOpp, fillColor);
+#dilatedImage2 = dilation(image2, structuringElement2, fillColor);
 
-vec11 = convertPixelsToVectors(image2, fillColor)
-vec22 = convertPixelsToVectors(dilatedImage2, fillColor)
-diff2 = difference(vec11, vec22);
+dilatedFilled2 = dilation(filled2, structuringElement2, fillColor);
+
+vec11 = convertPixelsToVectors(dilatedFilled2, fillColor)
+vec22 = convertPixelsToVectors(image2, fillColor)
+diff2 = intersection(vec11, vec22)
 
 image3 = image;
 for i = 1:columns(diff2)
@@ -75,6 +79,6 @@ title("4. dilated filled");
 subplot(x_,y_,5), imshow(X5);
 title("5. difference");
 subplot(x_,y_,6), imshow(X6);
-title("6. narrowest point");
+title("6. narrowest points");
 
 
