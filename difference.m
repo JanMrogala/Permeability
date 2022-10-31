@@ -2,6 +2,12 @@
 
 function ret = difference(vectors1, vectors2)
 
+   if(size(vectors2)(1,2) > size(vectors1)(1,2))
+     tmp = vectors1;
+     vectors1 = vectors2;
+     vectors2 = tmp;
+   endif
+
    temp = vectors1;
    ret = {};
 
