@@ -8,65 +8,63 @@ filledImgNameDil = "output/filled2.png";
 x = 2;
 y = 1;
 
-structuringElement = {[0,0],[1,0],[0,1]};
-structuringElementOpp = {[0,0],[-1,0],[0,-1]};
-structuringElement2 = {[0,0],[1,0],[-1,0],[0,1],[0,-1]};
 
 image = uint8(imread(imgName));
 
 fillColor = [254;0;0];
 boundaryColor = [0;0;0];
-oldColor = image(y, x, :);
 
 filled = lineSeedFill2D(x, y, fillColor, boundaryColor, image);
 
-dilatedImage = dilation(image, structuringElement, boundaryColor);
+narrowestPoints = narrowestPoints2D(image, fillColor, boundaryColor, [x,y])
 
-filled2 = lineSeedFill2D(x, y, fillColor, boundaryColor, dilatedImage);
+for i = 1:columns(narrowestPoints)
 
+  image(narrowestPoints{i}(1,2),narrowestPoints{i}(1,1),:) = fillColor;
 
-dilatedFilledArea = dilation(filled2, structuringElement2, fillColor);
+endfor
 
-vec1 = convertPixelsToVectors(filled, fillColor);
-vec2 = convertPixelsToVectors(filled2, fillColor);
+#{
+#x direction --------------
+
+dilatedImageX = dilation(image, structuringElementX, boundaryColor);
+
+filled2X = lineSeedFill2D(x, y, fillColor, boundaryColor, dilatedImageX);
+
+dilatedFilledAreaX = dilation(filled2X, structuringElementOppX, fillColor);
+dilatedFilledArea2X = dilation(filled2X, structuringElement, fillColor);
+
+vec1 = convertPixelsToVectors(dilatedFilledAreaX, fillColor);
+vec2 = convertPixelsToVectors(dilatedFilledArea2X, fillColor);
 differenceVectors = difference(vec1, vec2);
-image2 = image;
+image2X = image;
 for i = 1:columns(differenceVectors)
-  if(dilatedImage(differenceVectors{i}(1,2),differenceVectors{i}(1,1),:) != boundaryColor)
-    image2(differenceVectors{i}(1,2),differenceVectors{i}(1,1),:) = fillColor;
+  if(image(differenceVectors{i}(1,2),differenceVectors{i}(1,1),:) != boundaryColor)
+
+    narrowestPoints(end+1) = differenceVectors{i};
   endif
 endfor
 
-image2 = dilation(image2, structuringElementOpp, fillColor);
-#dilatedImage2 = dilation(image2, structuringElement2, fillColor);
+for i = 1:columns(narrowestPoints)
 
-dilatedFilled2 = dilation(filled2, structuringElement2, fillColor);
+  image2X(narrowestPoints{i}(1,2),narrowestPoints{i}(1,1),:) = fillColor;
 
-vec11 = convertPixelsToVectors(dilatedFilled2, fillColor)
-vec22 = convertPixelsToVectors(image2, fillColor)
-diff2 = intersection(vec11, vec22)
 
-image3 = image;
-for i = 1:columns(diff2)
-  if(image(diff2{i}(1,2),diff2{i}(1,1),:) != boundaryColor)
-    image3(diff2{i}(1,2),diff2{i}(1,1),:) = fillColor;
-  endif
 endfor
+
 
 imwrite(filled, filledImgName);
-imwrite(dilatedImage, imgNameDil);
-imwrite(filled2, filledImgNameDil);
 
 
 X1=double(imread(imgName));
 X2=double(imread(imgNameDil));
 X3=double(imread(filledImgName));
 X4=double(imread(filledImgNameDil));
-X5=double(image2);
-X6=double(image3);
+X5=double(dilatedFilledAreaX);
+X6=double(image2X);
 
-x_ = 3;
-y_ = 2;
+x_ = 2;
+y_ = 3;
 
 subplot(x_,y_,1), imshow(X1);
 title("1. original");
@@ -80,5 +78,6 @@ subplot(x_,y_,5), imshow(X5);
 title("5. difference");
 subplot(x_,y_,6), imshow(X6);
 title("6. narrowest points");
-
+#}
+subplot(1,1,1), imshow(double(image));
 

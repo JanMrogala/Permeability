@@ -13,7 +13,7 @@ OUTPUT:
 
 #}
 
-function ret = dilation(image, structuringElement, targetColor)
+function ret = dilation(image, structuringElement, targetColor, seedPos)
 
   dilatedVectors = {};
   xLimit = size(image)(1,2);
@@ -25,7 +25,8 @@ function ret = dilation(image, structuringElement, targetColor)
     for n = 1:columns(imgVectors)
 
       v = structuringElement{i} + imgVectors{n};
-      if(v(1,1) <= 0 || v(1,1) > xLimit || v(1,2) <= 0 || v(1,2) > yLimit)
+      if(v(1,1) <= 0 || v(1,1) > xLimit || v(1,2) <= 0 || v(1,2) > yLimit ||
+          v == seedPos)
         continue
       else
         dilatedVectors(end+1) = v;
