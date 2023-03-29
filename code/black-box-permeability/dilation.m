@@ -15,7 +15,7 @@ OUTPUT:
 
 function ret = dilation(image, structuringElement, targetColor)
 
-  dilatedVectors = [];
+  dilatedVectors = {};
   xLimit = size(image)(1,2);
   yLimit = size(image)(1,1);
 
@@ -28,9 +28,7 @@ function ret = dilation(image, structuringElement, targetColor)
       if(v(1,1) <= 0 || v(1,1) > xLimit || v(1,2) <= 0 || v(1,2) > yLimit)
         continue
       else
-        if !ismember(v, dilatedVectors, 'rows')
-          dilatedVectors(end+1,:) = v;
-        endif
+        dilatedVectors(end+1) = v;
       endif
 
     endfor
@@ -38,8 +36,8 @@ function ret = dilation(image, structuringElement, targetColor)
 
   for i = 1:columns(dilatedVectors)
 
-    x = dilatedVectors(i,1);
-    y = dilatedVectors(i,2);
+    x = dilatedVectors{i}(1,1);
+    y = dilatedVectors{i}(1,2);
     image(y,x,:) = targetColor;
 
   endfor
