@@ -41,8 +41,7 @@ function ret = lineSeedFill2D(xi, yi, fillColor, image)
 		# find left bound
 
 		while ((x-1) > 0 &&
-         image(y,x-1) != 0 &&
-         image(y,x-1) != fillColor)
+         image(y,x-1) == 1)
 
 			x--;
 
@@ -50,8 +49,7 @@ function ret = lineSeedFill2D(xi, yi, fillColor, image)
 
 		# put seed below current scan line at left extreme
 		if ((y - 1) > 0 &&
-        image(y-1,x) != 0 &&
-        image(y-1,x) != fillColor)
+        image(y-1,x) == 1)
 
 			# push pixel into stack if there is no boundary pixel on the left, or x is out of bounds
 			if ((x - 1) > 0 &&
@@ -65,8 +63,7 @@ function ret = lineSeedFill2D(xi, yi, fillColor, image)
 
 		# put seed above current scan line at left extreme
 		if ((y + 1) <= sizeRows &&
-        image(y+1,x) != 0 &&
-        image(y+1,x) != fillColor)
+        image(y+1,x) == 1)
 
 			if ((x - 1) > 0 &&
           image(y+1,x-1) != 0 ||
@@ -79,14 +76,12 @@ function ret = lineSeedFill2D(xi, yi, fillColor, image)
 
 		# fill current scan line and find critical pixels
 		while (x <= sizeCols &&
-          image(y,x) != 0 &&
-          image(y,x) != fillColor)
+          image(y,x) == 1)
 
       image(y,x) = fillColor;
 
 			if ((y - 1) > 0 && (x - 1) > 0 &&
-          image(y-1,x) != 0 &&
-          image(y-1,x) != fillColor &&
+          image(y-1,x) == 1 &&
           image(y-1,x-1) == 0)
 
         stack(end+1) = [x,y-1];
@@ -94,8 +89,7 @@ function ret = lineSeedFill2D(xi, yi, fillColor, image)
 			endif
 
 			if ((y + 1) <= sizeRows && (x - 1) > 0 &&
-          image(y+1,x) != 0 &&
-          image(y+1,x) != fillColor &&
+          image(y+1,x) == 1 &&
           image(y+1,x-1) == 0)
 
         stack(end+1) = [x,y+1];
