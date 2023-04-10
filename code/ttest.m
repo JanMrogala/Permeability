@@ -1,36 +1,28 @@
-clear all; close all; profile clear; profile on;
+close all; clear all;
 
-image_matrix = zeros(100,100,100);
-for i = 1:100
-    image_matrix(:,:,i) = ~imread(sprintf('../resources/converted100x100/slice%d.tif', i-1));
-end
+% Load the "image" package
+pkg load image;
 
-##figure;
-##for i = 1:100
-##    subplot(2,5,i);
-##    imagesc(image_matrix(:,:,i));
-##    colormap(gray);
-##    axis square;
-##end
+% Define a custom 3D matrix
+A = zeros(3, 3, 3); % initialize all elements to 0
 
-fillColor = 0.5;
-filled_matrix = lineSeedFill3D(1,1,1,fillColor,image_matrix);
+% Set the values of the matrix manually
+A(1, 1, 1) = 1;
+A(2, 1, 1) = 1;
+A(3, 1, 1) = 1;
+A(1, 2, 1) = 0;
+A(2, 2, 1) = 0;
+A(3, 2, 1) = 0;
+A(1, 3, 1) = 1;
+A(2, 3, 1) = 1;
+A(3, 3, 1) = 1;
 
-% display the matrix in text form
+% Create a voxel image from the matrix
+V = logical(A);
 
-##figure;
-##for i = 1:10
-##    subplot(2,5,i);
-##    imagesc(filled_matrix(:,:,i));
-##    colormap(gray);
-##    axis square;
-##end
-
-for i = 1:size(filled_matrix,3)
-    imwrite(filled_matrix(:,:,i), sprintf('slices/slice_%d.png', i));
-end
-
-% Show profiler information
-profile off;
-data = profile ("info");
-profshow (data, 10);
+% Display the voxel image using vol3d
+figure();
+vol3d('CData', V, 'FaceAlpha', 0.5);
+axis('equal');
+axis('tight');
+view(3);

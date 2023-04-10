@@ -1,5 +1,6 @@
-clear all; close all; profile clear; profile on;
+clear all; close all; profile off; profile clear; profile on;
 
+% Load image library
 pkg load image;
 
 % Load the image
@@ -35,56 +36,57 @@ se = [0 0 0;
       0 1 1;
       0 1 1];
 
+seOpp = [1 1 0;
+         1 1 0;
+         0 0 0];
+
 dilationCounter = 0;
 img = im2double(img);
 
+% Repeat until not permeable anymore
 do
 
   permeable = false;
 
   % Fill image starting from left border
   for i = 1:size(filledImg, 1)
-
       if(filledImg(i,1) == 1)
-        filledImg = lineSeedFill2D(1,i,fillColor,filledImg);
+        filledImg = lineSeedFill2D(i,1,fillColor,filledImg);
       endif
-
   endfor
 
   % Plot current image
   num_images++;
   subplot(plotX, plotY, num_images);
   imshow(filledImg);
-  title(sprintf('Step %d', num_images));
+  title(sprintf('Dilations: %d', dilationCounter));
 
   % Check if right border side contains filled pixels
-  for i = 1:size(filledImg, 1)
-
-      if(filledImg(i,size(filledImg, 2)) == fillColor)
-        permeable = true;
-        break
-      endif
-
-endfor
+  permeable = any(filledImg(:, end) == fillColor);
 
   %% Dilatation of image
   if(permeable)
     img = ~img;
 
-    img = imdilate(img, se);
+    if(mod(dilationCounter,2) == 0)
+      img = imdilate(img, se);
+    else
+      img = imdilate(img, seOpp);
+    endif
 
     img = ~img;
     img = im2double(img);
 
     filledImg = img;
-    dilationCounter += 1;
+    dilationCounter++;
   endif
 
 until(!permeable)
 
+disp("permeability-2D");
 disp(sprintf('Size of critical passage: %d', dilationCounter));
 
 % Show profiler information
-profile off;
 data = profile ("info");
 profshow (data, 10);
+total_time = sum([data.FunctionTable.TotalTime])

@@ -15,7 +15,7 @@ OUTPUT:
 
 #}
 
-function ret = lineSeedFill3D(xi, yi, zi, fillColor, image)
+function ret = lineSeedFill3D(yi, xi, zi, fillColor, image)
 
   sizeRows = size(image, 1);
   sizeCols = size(image, 2);

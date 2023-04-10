@@ -14,7 +14,7 @@ OUTPUT:
 
 #}
 
-function ret = lineSeedFill2D(xi, yi, fillColor, image)
+function ret = lineSeedFill2D(yi, xi, fillColor, image)
 
   sizeRows = size(image, 1);
   sizeCols = size(image, 2);
