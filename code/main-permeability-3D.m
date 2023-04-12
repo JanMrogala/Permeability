@@ -52,14 +52,14 @@ do
     num_images++;
     subplot(plotX, plotY, num_images);
     imshow(matrixToShow);
-    title(sprintf('|| (F1) Dilations: %d', dilationCounter));
+    title(sprintf('< (F1) Dilations: %d', dilationCounter));
 
     matrixToShow = permute(filled_matrix(:, end, :), [3, 1, 2]);
 
     num_images++;
     subplot(plotX, plotY, num_images);
     imshow(matrixToShow);
-    title(sprintf('(F2) Dilations: %d ||', dilationCounter));
+    title(sprintf('(F2) Dilations: %d >', dilationCounter));
 
   endif
 

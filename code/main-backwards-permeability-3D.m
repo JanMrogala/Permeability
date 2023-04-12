@@ -77,14 +77,14 @@ do
     num_images++;
     subplot(plotX, plotY, num_images);
     imshow(matrixToShow);
-    title(sprintf('|| (F1) Rough dilations: %d', dilations));
+    title(sprintf('< (F1) Rough dilations: %d', dilations));
 
     matrixToShow = permute(filled_matrix(:, end, :), [3, 1, 2]);
 
     num_images++;
     subplot(plotX, plotY, num_images);
     imshow(matrixToShow);
-    title(sprintf('(F2) Rough dilations: %d ||', dilations));
+    title(sprintf('(F2) Rough dilations: %d >', dilations));
 
   endif
 
@@ -149,14 +149,14 @@ do
     num_images++;
     subplot(plotX, plotY, num_images);
     imshow(matrixToShow);
-    title(sprintf('|| (F1) Fine dilations: %d', dilations));
+    title(sprintf('< (F1) Fine dilations: %d', dilations));
 
     matrixToShow = permute(filled_matrix(:, end, :), [3, 1, 2]);
 
     num_images++;
     subplot(plotX, plotY, num_images);
     imshow(matrixToShow);
-    title(sprintf('(F2) Fine dilations: %d ||', dilations));
+    title(sprintf('(F2) Fine dilations: %d >', dilations));
 
   endif
 
