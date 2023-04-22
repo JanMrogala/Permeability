@@ -4,7 +4,7 @@ clear all; close all; profile off; profile clear; profile on;
 pkg load image;
 
 % Load the image
-imgName = "../resources/testImg/20x20.png";
+imgName = "../resources/testImg/sample.png";
 img = imread(imgName);
 img = im2double(img);
 
@@ -20,8 +20,8 @@ if !all(all((img == 1) | (img == 0)))
 endif
 
 % inverse the sample image
-##img = ~img;
-##img = im2double(img);
+img = ~img;
+img = im2double(img);
 
 filledImg = img;
 fillColor = 0.5;
@@ -145,10 +145,11 @@ disp("backwards-permeability-2D");
 disp(sprintf('Size of critical passage: %d', finalDilations));
 
 # Show final dilated filled image with differing colors for every distinct area
-numberOfPassages = 0
+numberOfPassages = 0;
 fillColor = 0.3;
 filledImg = dilatedImg;
 temp = filledImg;
+
 for i = 1:size(filledImg, 1)
     if(temp(i,1) == 1)
         temp = lineSeedFill2D(i,1,fillColor,dilatedImg);
@@ -163,12 +164,22 @@ for i = 1:size(filledImg, 1)
     endif
 endfor
 
+disp(sprintf('Number of permeable passages with same size: %d', numberOfPassages));
 
 % Plot current image
   num_images++;
   subplot(plotX, plotY, num_images);
   imshow(filledImg);
   title(sprintf('Permeable passages: %d', numberOfPassages));
+
+transfer_idx = find(filledImg != 0);
+img(transfer_idx) = filledImg(transfer_idx);
+
+% Plot current image
+  num_images++;
+  subplot(plotX, plotY, num_images);
+  imshow(img);
+  title("Center passage in original");
 
 % Show profiler information
 data = profile ("info");
