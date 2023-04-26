@@ -27,7 +27,7 @@ filledImg = img;
 fillColor = 0.5;
 
 num_images = 0;
-plotX = 4;
+plotX = 3;
 plotY = 4;
 
 % Create a structuring element
@@ -58,9 +58,9 @@ do
   for i = 1:dilations
 
       if(mod(i,2) == 0)
-        dilatedImg = imdilate(dilatedImg, se);
-      else
         dilatedImg = imdilate(dilatedImg, seOpp);
+      else
+        dilatedImg = imdilate(dilatedImg, se);
       endif
 
   endfor
@@ -108,9 +108,9 @@ do
   for i = 1:dilations
 
       if(mod(i,2) == 0)
-        dilatedImg = imdilate(dilatedImg, se);
-      else
         dilatedImg = imdilate(dilatedImg, seOpp);
+      else
+        dilatedImg = imdilate(dilatedImg, se);
       endif
 
   endfor
@@ -146,7 +146,7 @@ disp(sprintf('Size of critical passage: %d', finalDilations));
 
 # Show final dilated filled image with differing colors for every distinct area
 numberOfPassages = 0;
-fillColor = 0.3;
+fillColor = 0.01;
 filledImg = dilatedImg;
 temp = filledImg;
 
@@ -158,27 +158,77 @@ for i = 1:size(filledImg, 1)
         if(permeable)
           transfer_idx = find(temp == fillColor);
           filledImg(transfer_idx) = temp(transfer_idx);
-          fillColor = fillColor + 0.2;
+          fillColor = fillColor + 0.01;
           numberOfPassages++;
         endif
     endif
 endfor
 
 disp(sprintf('Number of permeable passages with same size: %d', numberOfPassages));
+disp("-------------------------------------------------");
 
-% Plot current image
+imToShow = zeros(size(filledImg,1),size(filledImg,2),3);
+imToShow(:,:,1) = filledImg;
+imToShow(:,:,2) = filledImg;
+imToShow(:,:,3) = filledImg;
+
+colors = { [1 0 0],
+           [0 1 0],
+           [0 0 1],
+           [1 1 0],
+           [0 1 1],
+           [1 0 1],
+           [0.5 0 0],
+           [0 0.5 0],
+           [0 0.5 0.5],
+           [0.5 0.5 0] };
+
+colorIdx = 1;
+for i = 0.01:0.01:fillColor
+
+    imToShow_r = imToShow(:,:,1);
+    imToShow_r(imToShow_r == i) = colors{colorIdx}(1);
+    imToShow(:,:,1) = imToShow_r;
+
+    imToShow_g = imToShow(:,:,2);
+    imToShow_g(imToShow_g == i) = colors{colorIdx}(2);
+    imToShow(:,:,2) = imToShow_g;
+
+    imToShow_b = imToShow(:,:,3);
+    imToShow_b(imToShow_b == i) = colors{colorIdx}(3);
+    imToShow(:,:,3) = imToShow_b;
+
+    colorIdx++;
+
+endfor
+
+imToShow = imToShow*255;
+
+% Plot all permeable passages
   num_images++;
   subplot(plotX, plotY, num_images);
-  imshow(filledImg);
+  imshow(imToShow);
   title(sprintf('Permeable passages: %d', numberOfPassages));
 
-transfer_idx = find(filledImg != 0);
-img(transfer_idx) = filledImg(transfer_idx);
+img1 = imToShow; % example 3D matrix representing an image
+img2 = zeros(size(img1)); % create new 3D matrix of the same size
+img2(:,:,1) = img;
+img2(:,:,2) = img;
+img2(:,:,3) = img;
+img2 = img2 * 255;
 
-% Plot current image
+% create a logical matrix that is true where img1 is not black or white
+notBlackOrWhite = ~(img1(:,:,1) == 0 & img1(:,:,2) == 0 & img1(:,:,3) == 0) & ...
+                  ~(img1(:,:,1) == 255 & img1(:,:,2) == 255 & img1(:,:,3) == 255);
+
+% transfer colors that are not black or white from img1 to img2
+img2(repmat(notBlackOrWhite, [1, 1, 3])) = img1(repmat(notBlackOrWhite, [1, 1, 3]));
+
+
+% Plot all permeable passages center lines
   num_images++;
   subplot(plotX, plotY, num_images);
-  imshow(img);
+  imshow(img2);
   title("Center passage in original");
 
 % Show profiler information
